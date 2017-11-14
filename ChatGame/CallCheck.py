@@ -1,13 +1,16 @@
-from Connection.Read import getMessage
-from Connection.Socket import openSocket
-from Connection.Socket import sendMessage
-from ChatGame.Followers import join
-def check_call(line,s):
+from Connection.Read import get_message
+from Connection.Socket import send_message
+from ChatGame.Followers import join, get_user_points, get_player
 
-    call = str(getMessage(line))
 
-    if "!rank" + call[len(call)-1] == call:
-        sendMessage(s," Plat 3")
+def check_call(line, s):
 
-    if "!join" + call[len(call)-1] == call:
-        join(line,s)
+    call = str(get_message(line))
+
+    if '!rank' + call[len(call)-1] == call:
+        send_message(s, " Plat 3")
+
+    if '!join' + call[len(call)-1] == call:
+        join(line, s)
+    if '!points' + call[len(call)-1] == call:
+        send_message(s, str(get_user_points(get_player(line))))

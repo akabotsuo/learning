@@ -1,65 +1,41 @@
 import random
 
-from Connection.Socket import sendMessage
-from Connection.Read import getUser
+from Connection.Socket import send_message
+from Connection.Read import get_user_line
+from db.SQL import *
 
 
-def join(line,s):
-    userExist = get_player(line)
-
-    if 0 < len(userExist[0]):
-        sendMessage(s, (userExist[0] + " you have already joined the " + userExist[1]  + " team!"))
+def follow_check(user):  # Returns true if u are allowed to follow
+    if get_user("Followers", user) is not None:
+        return True
     else:
-        follow(userExist[0],s)
+        return False
 
-    #Do luck func
+
+def join(line, s):
+    user_exist = get_player(line)
+    print(user_exist)
+    if get_user('Followers', user_exist) is not None:
+        send_message(s, (user_exist + " you have already joined the " + get_user('Followers', user_exist)[2] + " team!"))
+    else:
+        follow(user_exist, s)
+
 
 def get_player(line):
-    user = getUser(line)
-    file = open("ChatGame\score", "r")
-    i = 1
-    koll = file.readlines(i)
-    userExist = False
-
-    while koll:
-        Tuser = str(koll).split(" ", 3)[0].replace("['", "")
-        if Tuser == user:
-            file.close()
-            return koll.split(" ")
-        else:
-            koll = file.readlines(i)
-
-    file.close()
-    return []
+    user = get_user_line(line)
+    return user
 
 
-def gainPoints(user,points):
-    file = open("score", "r")
-    i = 1
-    koll = file.readlines(i)
-    userExist = False
-    while koll:
-        # print(koll)
-        koll = str(koll)
-        Tuser = koll.split(" ", 3)[0]
-        Tuser = Tuser.replace("['", "")
-        if Tuser == user:
-            return False
+def get_user_points(user):
+    print(get_user("Followers", user)[1])
+    return get_user("Followers", user)[1]
 
 
+def gain_points(user, points):
+    update_points('Followers', user, get_user_points(user) + points)
 
-def follow(user,s):
+
+def follow(user, s):
     team = random.choice(["Green", "Red"])
-    sendMessage(s, (user + " joined the " + team + " team!"))
-    file = open("score", "a")
-    file.write(user + " " + team + " 0 -\n")
-    file.close()
-
-#ej klar
-def fb(line,s,user,team,points):
-    if points is int:
-        if points > 1000 or points <= 0:
-            return False
-        #place bet if bet open send into function
-
-
+    send_message(s, (user + " joined the " + team + " team!"))
+    new_follower('Followers', user, team)

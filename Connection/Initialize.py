@@ -1,20 +1,22 @@
-from Connection.Socket import sendMessage
+from Connection.Socket import send_message
 
-def joinRoom(s):
-    readbuffer = ""
-    Loading = True
-    while Loading:
-        readbuffer = readbuffer + s.recv(1024).decode()
-        temp = str.split(readbuffer, "\n")
-        readbuffer = temp.pop()
+
+def join_room(s):
+    read_buffer = ""
+    loading = True
+    while loading:
+        read_buffer = read_buffer + s.recv(1024).decode()
+        temp = str.split(read_buffer, "\n")
+        read_buffer = temp.pop()
 
         for line in temp:
             print(line)
-            Loading = loadingComplete(line)
-    sendMessage(s, "Bot is now active")
+            loading = loading_complete(line)
+    send_message(s, "Bot is now active")
 
-def loadingComplete(line):
-    if("End of /NAMES list" in line):
+
+def loading_complete(line):
+    if "End of /NAMES list" in line:
         return False
     else:
         return True

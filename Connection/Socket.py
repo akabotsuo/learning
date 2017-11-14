@@ -3,7 +3,7 @@ import socket
 from Connection.Settings import HOST, PORT, PASS, IDENT, CHANNEL
 
 
-def openSocket():
+def open_socket():
 
     s = socket.socket()
     s.connect((HOST, PORT))
@@ -12,7 +12,8 @@ def openSocket():
     s.send(("JOIN #" + CHANNEL + "\r\n").encode())
     return s
 
-def sendMessage(s, message):
-    messageTemp = "PRIVMSG #" + CHANNEL + " :" + message
-    s.send((messageTemp + "\r\n").encode())
-    print("Sent: " + messageTemp)
+
+def send_message(s, message):
+    message_temp = "PRIVMSG #" + CHANNEL + " :" + message
+    s.send((message_temp + "\r\n").encode())
+    print("Sent: " + message_temp)
